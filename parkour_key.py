@@ -1,10 +1,10 @@
 import os
 import sys
-import cv2
+# import cv2
 import random
 import pygame
 import pygame.camera
-from deepface import DeepFace
+# from deepface import DeepFace
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 380
@@ -19,11 +19,11 @@ GAME_SPEED = 2
 
 delta = 18
 
-# init camera through opencv
-faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-cap = cv2.VideoCapture(0)
-cap.set(3, 640) 
-cap.set(4, 480)
+# # init camera through opencv
+# faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+# cap = cv2.VideoCapture(0)
+# cap.set(3, 640) 
+# cap.set(4, 480)
 
 # init pygame
 pygame.init()
@@ -447,33 +447,33 @@ def main():
 	# mainloop
 	while True:
 		# read webcam images		
-		success, frame = cap.read()
-		if not success:
-			print("Error: failed reading image from webcam")
-			break
-		frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+		# success, frame = cap.read()
+		# if not success:
+		# 	print("Error: failed reading image from webcam")
+		# 	break
+		# frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 		
-		# predict expression
-		if loops % 20 == 1 and game.playing and not over and not main_character.in_action():
-			result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
-			expr = result[0]['dominant_emotion']
-			if expr == "happy":
-				if main_character.onground:
-					main_character.jump()
-			elif expr == "surprise":
-				main_character.shovel(loops)
-			elif expr == "neutral":
-				continue
-			else:
-				if energy_bar.value == 5:
-					main_character.dash(loops)
-					energy_bar.clear_energy()
+		# # predict expression
+		# if loops % 20 == 1 and game.playing and not over and not main_character.in_action():
+		# 	result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
+		# 	expr = result[0]['dominant_emotion']
+		# 	if expr == "happy":
+		# 		if main_character.onground:
+		# 			main_character.jump()
+		# 	elif expr == "surprise":
+		# 		main_character.shovel(loops)
+		# 	elif expr == "neutral":
+		# 		continue
+		# 	else:
+		# 		if energy_bar.value == 5:
+		# 			main_character.dash(loops)
+		# 			energy_bar.clear_energy()
 		
-		# display webcam image
-		frame = cv2.flip(frame, 1) 
-		frame = pygame.image.frombuffer(frame.tobytes(), frame.shape[1::-1], "RGB")
-		frame = pygame.transform.scale(frame, (240, 180))
-		screen.blit(frame, (0, HEIGHT))
+		# # display webcam image
+		# frame = cv2.flip(frame, 1) 
+		# frame = pygame.image.frombuffer(frame.tobytes(), frame.shape[1::-1], "RGB")
+		# frame = pygame.transform.scale(frame, (240, 180))
+		# screen.blit(frame, (0, HEIGHT))
 
 
 		if game.playing:
@@ -554,6 +554,6 @@ def main():
 
 main()
 # release resources
-cap.release()
+# cap.release()
 pygame.quit()
 
