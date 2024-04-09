@@ -15,7 +15,7 @@ HEIGHT = 200
 CAM_WIDTH = 240
 CAM_HEIGHT = 180
 
-GAME_SPEED = 2
+GAME_SPEED = 5
 
 delta = 18
 
@@ -264,6 +264,7 @@ class Rock:
 		self.height = 45
 		self.x = x
 		self.y = HEIGHT - 45 - delta
+		self.broken = False
 		self.set_texture()
 		self.show()
 
@@ -272,6 +273,9 @@ class Rock:
 
 	def show(self):
 		screen.blit(self.texture, (self.x, self.y))
+
+	def broken_by_actor(self):
+		self.broken = True
 
 	def set_texture(self):
 		path = os.path.join('assets/images/rock.png')
@@ -410,15 +414,15 @@ class Game:
 			x = 500
 
 		obstacle = None
-		if loops < 600:
+		if loops < 200:
 			# only spawn bushes at the early stage
 			obstacle = Bush(x)
 		else:
 			obstacle_type = random.randint(0,10)
-			if obstacle_type >= 0 and obstacle_type < 6 :
+			if obstacle_type >= 0 and obstacle_type < 3 :
 				# create the new bush
 				obstacle = Bush(x)
-			elif obstacle_type >= 6 and obstacle_type < 8:
+			elif obstacle_type >= 4 and obstacle_type < 7:
 				# create the new rock
 				obstacle = Rock(x)
 			else:
@@ -437,7 +441,7 @@ def main():
 	enemy = game.enemy 
 	energy_bar = game.energy_bar
 	# variables
-	clock = pygame.time.Clock()
+	# clock = pygame.time.Clock()
 	loops = 0
 	over = False
 	hit_bush_start = -1
@@ -468,6 +472,7 @@ def main():
 				if energy_bar.value == 5:
 					main_character.dash(loops)
 					energy_bar.clear_energy()
+					enemy.reduce_monster()
 		
 		# display webcam image
 		frame = cv2.flip(frame, 1) 
@@ -548,7 +553,7 @@ def main():
 					over = False
 					game.start()
 
-		clock.tick(60)
+		# clock.tick(60)
 		pygame.display.update()
 		
 
