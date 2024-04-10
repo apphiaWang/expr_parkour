@@ -26,7 +26,7 @@ TBD
 - Python 3.9.1
 - Pygame 2.5.2
 - opencv-python 4.9.0
-- tensorflow 2.9.0
+- tensorflow >= 2.9.0
 - DeepFace 0.0.89
 
 After you installed the required dependencies, run `python parkour.py` to play the game.
