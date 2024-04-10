@@ -17,7 +17,7 @@ TBD
 - **assets**: the directory storing game assets such as background image and sound
 - **data**: the directory storing our collected data for self-evaluation
     - **annotation**: a csv file for annotation
-- **model**: the diectory storing code of fine-tuning transformer-based AU detection model
+- **transformer_based_AU_model**: the diectory storing code of training data processing and fine-tuning transformer-based AU detection model
 - **parkour.py**: the game
 
 ## How to play
@@ -28,6 +28,15 @@ TBD
 - opencv-python 4.9.0
 - tensorflow >= 2.9.0
 - DeepFace 0.0.89
+- h5py==2.10.0
+- dlib
+- imutils
+- keras-pos-embd
+- keras-multi-head
+- keras-layer-normalization
+- keras-position-wise-feed-forward
+- keras-embed-sim
+- scikit-learn
 
 After you installed the required dependencies, run `python parkour.py` to play the game.
 
