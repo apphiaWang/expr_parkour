@@ -12,14 +12,13 @@
 # Usage
 + To run the codes please follow the following jupyter notebooks, which contain further detailed explanations and comments about the codes.
 ## Data preprocessing
-- preprocess.ipynb: Extraced frames from original videos and checked the AU label distributions.
++ preprocess.ipynb: Extraced frames from original videos and checked the AU label distributions.
 ## Ground truth Attention Map Generation
-- attention_map_generation.ipynb: Generated ground truth attention map for each frame and each AU, concatenated the frame image, attention map, and label for further training.
++ attention_map_generation.ipynb: Generated ground truth attention map for each frame and each AU, concatenated the frame image, attention map, and label for further training.
 ## Pretrained Model Inference
--pretrained_inference.ipynb: Used the pre-trained model to do inference and evaluation on the DISFA test set. 
++ pretrained_inference.ipynb: Used the pre-trained model to do inference and evaluation on the DISFA test set. 
 ## Finetune and Inference
 finetune_inference.ipynb: Used the pre-trained model and finetune it on the DISFA training data. We change part of the loss functions for experiments. Then the finetuned model was used to do inference and evaluation on the DISFA test set.
 ## Model files
-- face detection/shape_predictor_68_face_landmarks.dat: The model file used for identifying the 68 landmarks of faces in an image.
-- models: store the finetuned model weights
-  
++ face detection/shape_predictor_68_face_landmarks.dat: The model file used for identifying the 68 landmarks of faces in an image.
++ models: store the finetuned model weights
