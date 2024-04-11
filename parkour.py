@@ -29,15 +29,13 @@ ENERGY_GROWTH_DELTA = 100
 # init camera through opencv
 faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(0)
-cap.set(3, 640) 
-cap.set(4, 480)
 
 # init pygame
 pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode( (SCREEN_WIDTH, SCREEN_HEIGHT) )
 
-pygame.display.set_caption('Expression Parkour')
+pygame.display.set_caption('Expression Parkour Master')
 
 class BG:
 	def __init__(self, x): 
@@ -499,7 +497,7 @@ def main(game_mode="normal"):
 			break
 		frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 		
-		# predict expression
+		# predict expression for action
 		if loops % 20 == 1 and game.playing and not game.mc.in_action():
 			result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
 			expr = result[0]['dominant_emotion']
