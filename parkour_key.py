@@ -476,6 +476,7 @@ def main(game_mode="normal"):
 	clock = pygame.time.Clock()
 	loops = 0
 	over = False
+	force_over = False
 
 	game.show_start_msg()
 
@@ -548,10 +549,15 @@ def main(game_mode="normal"):
 					loops = 0
 					over = False
 					game.start()
+				
+				if event.key == pygame.K_DOWN: # force game over
+					over = True
+					force_over = True
 					
 		# game over if not cheating
-		if game_mode!= "cheat" and over and game.playing:
+		if force_over or (game_mode!= "cheat" and over and game.playing):
 			game.over()
+			force_over = False
 
 		clock.tick(60)
 		pygame.display.update()
@@ -562,4 +568,3 @@ main(game_mode)
 
 # release resources
 pygame.quit()
-
