@@ -1,41 +1,39 @@
 import os
 import sys
-# import cv2
 import random
 import pygame
-import pygame.camera
-# from deepface import DeepFace
 
+# init game setting
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 380
 
-WIDTH = 800
-HEIGHT = 200
+# size for parkour lane
+LANE_WIDTH = 800
+LANE_HEIGHT = 200
 
+# size for webcam window
 CAM_WIDTH = 240
 CAM_HEIGHT = 180
 
-GAME_SPEED = 2
+GAME_SPEED = 5
 
-delta = 18
+DELTA_TO_GROUND = 18
 
-# # init camera through opencv
-# faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-# cap = cv2.VideoCapture(0)
-# cap.set(3, 640) 
-# cap.set(4, 480)
+ENERGY_DASH_DURATION = 120
+
+ENERGY_GROWTH_DELTA = 100
 
 # init pygame
 pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode( (SCREEN_WIDTH, SCREEN_HEIGHT) )
 
-pygame.display.set_caption('Expression Parkour')
+pygame.display.set_caption('Expression Parkour Master')
 
 class BG:
 	def __init__(self, x): 
-		self.width = WIDTH
-		self.height = HEIGHT
+		self.width = LANE_WIDTH
+		self.height = LANE_HEIGHT
 		self.x = x
 		self.y = 0
 		self.set_texture()
@@ -43,8 +41,8 @@ class BG:
 
 	def update(self, dx):
 		self.x += dx
-		if self.x <= -WIDTH:
-			self.x = WIDTH
+		if self.x <= -LANE_WIDTH:
+			self.x = LANE_WIDTH
 
 	def show(self):
 		screen.blit(self.texture, (self.x, self.y))
@@ -59,7 +57,7 @@ class Instruction:
 		self.width = SCREEN_WIDTH - CAM_WIDTH
 		self.height = CAM_HEIGHT
 		self.x = CAM_WIDTH
-		self.y = HEIGHT
+		self.y = LANE_HEIGHT
 		self.font = pygame.font.SysFont('monospace', 14)
 		self.color = (0, 0, 0)
 		self.show()
@@ -86,7 +84,7 @@ class Enemy:
 		self.width = 55
 		self.height = 50
 		self.x = 0
-		self.y = HEIGHT - self.height - 30
+		self.y = LANE_HEIGHT - self.height - 30
 		self.texture_num = 0
 		self.number = 1
 		self.set_texture()
@@ -101,8 +99,9 @@ class Enemy:
 
 	def add_monster(self):
 		self.number += 1
-		self.x += 10
+		self.x += 15
 		self.set_texture()
+		self.show()
 
 	def reduce_monster(self):
 		if self.number > 1:
@@ -125,7 +124,7 @@ class MC:
 		self.width = 48
 		self.height = 60
 		self.x = 80
-		self.y = HEIGHT - 60 - delta
+		self.y = LANE_HEIGHT - 60 - DELTA_TO_GROUND
 		self.texture_img = 'idle.png'
 		self.texture_num = 0
 		self.dy = 2
@@ -202,22 +201,22 @@ class MC:
 	def dash_resize(self):
 		self.width = 90
 		self.height = 60
-		self.y = HEIGHT - 60 - delta
+		self.y = LANE_HEIGHT - 60 - DELTA_TO_GROUND
 
 	def shovel_resize(self):
 		self.width = 60
 		self.height = 40
-		self.y = HEIGHT - 40 - delta
+		self.y = LANE_HEIGHT - 40 - DELTA_TO_GROUND
 
 	def reset_size(self):
 		self.width = 48
 		self.height = 60
-		self.y = HEIGHT - 60 - delta
+		self.y = LANE_HEIGHT - 60 - DELTA_TO_GROUND
 
 	def dash(self, loops):
 		# self.sound.play()
 		self.dashing = True
-		self.dash_stop = loops + 120
+		self.dash_stop = loops + ENERGY_DASH_DURATION
 		self.dash_resize()
 
 	def jump(self):
@@ -238,17 +237,41 @@ class MC:
 		self.falling = False
 		self.onground = True
 
-class Bush:
+class Obstacle:
+	def __init__(self):
+		self.hit = False
+		self.crash = False
+		self.set_sound()
+	
+	def get_hit(self):
+		self.hit = True
+	
+	def get_crash(self):
+		self.crash = True
+		self.set_crash_texture()
+		self.crash_sound.play()
+	
+	def set_crash_texture(self):
+		path = os.path.join('assets/images/crash.png')
+		self.texture = pygame.image.load(path)
+		self.texture = pygame.transform.scale(self.texture, (30, 30))
+	
+	def set_sound(self):
+		path = os.path.join('assets/sounds/crash.mp3')
+		self.crash_sound = pygame.mixer.Sound(path)
+		
+class Bush(Obstacle):
 	def __init__(self, x):
+		super().__init__()
 		self.width = 25
 		self.height = 25
 		self.x = x
-		self.y = HEIGHT - 25 - delta
+		self.y = LANE_HEIGHT - 25 - DELTA_TO_GROUND
 		self.set_texture()
 		self.show()
 
 	def update(self, dx):
-		self.x += dx	
+		self.x += dx
 
 	def show(self):
 		screen.blit(self.texture, (self.x, self.y))
@@ -258,12 +281,13 @@ class Bush:
 		self.texture = pygame.image.load(path)
 		self.texture = pygame.transform.scale(self.texture, (self.width, self.height))
 
-class Rock:	
+class Rock(Obstacle):	
 	def __init__(self, x):
+		super().__init__()
 		self.width = 30
 		self.height = 45
 		self.x = x
-		self.y = HEIGHT - 45 - delta
+		self.y = LANE_HEIGHT - 45 - DELTA_TO_GROUND
 		self.set_texture()
 		self.show()
 
@@ -278,12 +302,13 @@ class Rock:
 		self.texture = pygame.image.load(path)
 		self.texture = pygame.transform.scale(self.texture, (self.width, self.height))
 
-class Fire:
+class Fire(Obstacle):
 	def __init__(self, x):
+		super().__init__()
 		self.width = 55
 		self.height = 75
 		self.x = x
-		self.y = HEIGHT - 75 - 55
+		self.y = LANE_HEIGHT - 75 - 55
 		self.set_texture()
 		self.show()
 
@@ -315,37 +340,51 @@ class Collision:
 class EnergyBar:
 	def __init__(self):
 		self.value = 0
-		self.delta = 0
+		self.growth = 0
 		self.width = 100
 		self.height = 30
-		self.x = WIDTH - 120
+		self.x = LANE_WIDTH - 120
 		self.y = 10
+		self.energy_dash_stop = -1
+		self.texture_img = 'energy_0.png'
 		self.set_texture()
 		self.set_sound()
 		self.show()
 
-	def update(self):
+	def update(self, loops):
 		if (self.value < 5):
-			self.delta += 1
-			if self.delta == 100:
+			self.growth += 1
+			if self.growth == ENERGY_GROWTH_DELTA:
 				self.value += 1
 				if self.value == 5:
 					self.full_sound.play()
 				else:
 					self.point_sound.play()
-				self.delta = 0
+				self.growth = 0
+				self.texture_img = f'energy_{self.value}.png'
 				self.set_texture()
+		if (self.value == 5 and loops == self.energy_dash_stop):
+			self.value = 0
+			self.texture_img = f'energy_{self.value}.png'
+			self.set_texture()
 
-	def clear_energy(self, active=False):
+	def clear_energy(self):
 		self.value = 0
+		self.texture_img = f'energy_{self.value}.png'
 		self.clear_sound.play()
+		self.set_texture()
+	
+	def use_energy(self, loops):
+		self.energy_dash_stop = loops + ENERGY_DASH_DURATION
+		self.use_sound.play()
+		self.texture_img = f'energy_using.png'
 		self.set_texture()
 	
 	def show(self):
 		screen.blit(self.texture, (self.x, self.y))
 
 	def set_texture(self):
-		path = os.path.join(f'assets/images/energy_{self.value}.png')
+		path = os.path.join(f'assets/images/{self.texture_img}')
 		self.texture = pygame.image.load(path)
 		self.texture = pygame.transform.scale(self.texture, (self.width, self.height))
 
@@ -356,10 +395,12 @@ class EnergyBar:
 		self.full_sound = pygame.mixer.Sound(path)
 		path = os.path.join('assets/sounds/clear.mp3')
 		self.clear_sound = pygame.mixer.Sound(path)
+		path = os.path.join('assets/sounds/use_energy.mp3')
+		self.use_sound = pygame.mixer.Sound(path)
 
 class Game:
 	def __init__(self, hs=0):
-		self.bg = [BG(x=0), BG(x=WIDTH)]
+		self.bg = [BG(x=0), BG(x=LANE_WIDTH)]
 		self.instruction = Instruction()
 		self.mc = MC()
 		self.enemy = Enemy()
@@ -380,7 +421,7 @@ class Game:
 		self.start_lbl = big_font.render(f'press space to start game', 1, (0, 0, 0))
 
 	def show_start_msg(self):
-		screen.blit(self.start_lbl, (WIDTH // 2 - self.start_lbl.get_width() // 2, HEIGHT // 4))
+		screen.blit(self.start_lbl, (LANE_WIDTH // 2 - self.start_lbl.get_width() // 2, LANE_HEIGHT // 4))
 
 	def set_sound(self):
 		path = os.path.join('assets/sounds/die.wav')
@@ -391,8 +432,8 @@ class Game:
 
 	def over(self):
 		self.sound.play()
-		screen.blit(self.dead_lbl, (WIDTH // 2 - self.dead_lbl.get_width() // 2, HEIGHT // 4))
-		screen.blit(self.restart_lbl, (WIDTH // 2 - self.restart_lbl.get_width() // 2, HEIGHT // 2))
+		screen.blit(self.dead_lbl, (LANE_WIDTH // 2 - self.dead_lbl.get_width() // 2, LANE_HEIGHT // 4))
+		screen.blit(self.restart_lbl, (LANE_WIDTH // 2 - self.restart_lbl.get_width() // 2, LANE_HEIGHT // 2))
 		self.energy_bar.clear_energy()
 		self.enemy.reset_monster()
 		self.playing = False
@@ -405,7 +446,7 @@ class Game:
 		# list obstacles
 		if len(self.obstacles) > 0:
 			prev_obstacle = self.obstacles[-1]
-			x = random.randint(prev_obstacle.x + self.mc.width + MIN_GAP, WIDTH + prev_obstacle.x + self.mc.width + MIN_GAP)
+			x = random.randint(prev_obstacle.x + self.mc.width + MIN_GAP, LANE_WIDTH + prev_obstacle.x + self.mc.width + MIN_GAP)
 		else:
 			x = 500
 
@@ -429,69 +470,28 @@ class Game:
 	def reset(self):
 		self.__init__()
 
-def main():
-	
-	# objects
+def main(game_mode="normal"):
+	# pygame objects
 	game = Game()
-	main_character = game.mc
-	enemy = game.enemy 
-	energy_bar = game.energy_bar
+	
 	# variables
 	clock = pygame.time.Clock()
 	loops = 0
 	over = False
-	hit_bush_start = -1
 
 	game.show_start_msg()
 
-	# mainloop
+	# pygame loop
 	while True:
-		# read webcam images		
-		# success, frame = cap.read()
-		# if not success:
-		# 	print("Error: failed reading image from webcam")
-		# 	break
-		# frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-		
-		# # predict expression
-		# if loops % 20 == 1 and game.playing and not over and not main_character.in_action():
-		# 	result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
-		# 	expr = result[0]['dominant_emotion']
-		# 	if expr == "happy":
-		# 		if main_character.onground:
-		# 			main_character.jump()
-		# 	elif expr == "surprise":
-		# 		main_character.shovel(loops)
-		# 	elif expr == "neutral":
-		# 		continue
-		# 	else:
-		# 		if energy_bar.value == 5:
-		# 			main_character.dash(loops)
-		# 			energy_bar.clear_energy()
-		
-		# # display webcam image
-		# frame = cv2.flip(frame, 1) 
-		# frame = pygame.image.frombuffer(frame.tobytes(), frame.shape[1::-1], "RGB")
-		# frame = pygame.transform.scale(frame, (240, 180))
-		# screen.blit(frame, (0, HEIGHT))
-
-
+		# render game assets
 		if game.playing:
-
 			for bg in game.bg:
 				bg.update(-game.speed)
 				bg.show()
 		
 			game.instruction.show()
 
-			main_character.update(loops)
-			main_character.show()
-
-			enemy.update(loops)
-			enemy.show()
-
-			energy_bar.update()
-			energy_bar.show()
+			game.mc.update(loops)
 
 			if game.tospawn(loops):
 				game.spawn_obstacle(loops)
@@ -500,24 +500,29 @@ def main():
 				obstacle.update(-game.speed)
 				obstacle.show()
 
-				hitting_bush  = hit_bush_start > 0 and (loops - hit_bush_start) <= main_character.width + 25
 				# checking collision
-				if (not hitting_bush
+				if (not obstacle.hit
+					and not obstacle.crash
 					and loops % 5 == 1 
-					and not main_character.dashing 
-					and game.collision.between(main_character, obstacle)):
-					if (obstacle.__class__.__name__ == 'Bush'):
-						energy_bar.clear_energy()
-						enemy.add_monster()
-						hit_bush_start = loops
-						if (enemy.number == 3):
-							over=True
+					and not over
+					and game.collision.between(game.mc, obstacle)):
+					if game.mc.dashing:
+						obstacle.get_crash()
 					else:
-						over=True
-
-			if over:
-				game.over()
-
+						if (obstacle.__class__.__name__ == 'Bush'):
+							game.energy_bar.clear_energy()
+							game.enemy.add_monster()
+							if (game.enemy.number == 3):
+								over=True
+						else:
+							over=True
+			
+			game.mc.show()
+			game.energy_bar.update(loops)
+			game.energy_bar.show()
+			game.enemy.update(loops)
+			game.enemy.show()
+			
 			loops += 1
 
 		# normal control using keys/mouse input
@@ -527,33 +532,36 @@ def main():
 				sys.exit()
 			
 			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_SPACE:
-					if not over:
-						if not game.playing:
+				if not over:
+					if event.key == pygame.K_SPACE:
+						if not game.playing: # start game
 							game.start()
-						elif main_character.onground:
-							main_character.jump()
-				if event.key == pygame.K_LSHIFT:
-					if not over:
-						main_character.shovel(loops)
-				if event.key == pygame.K_LCTRL and energy_bar.value == 5:
-					if not over:
-						main_character.dash(loops)
-						energy_bar.clear_energy()
-						enemy.reduce_monster()
-				if event.key == pygame.K_UP:
+						elif game.mc.onground: # jump
+							game.mc.jump()
+					if event.key == pygame.K_LSHIFT: # slide shovel
+						game.mc.shovel(loops)
+					if event.key == pygame.K_LCTRL and game.energy_bar.value == 5: # dash
+						game.mc.dash(loops)
+						game.energy_bar.use_energy(loops)
+						game.enemy.reduce_monster()
+
+				if event.key == pygame.K_UP: # restart game
 					game.reset()
-					main_character = game.mc
 					loops = 0
 					over = False
 					game.start()
+					
+		# game over if not cheating
+		if game_mode!= "cheat" and over and game.playing:
+			game.over()
 
 		clock.tick(60)
 		pygame.display.update()
-		
 
-main()
+# get game mode from command input
+game_mode = "cheat" if len(sys.argv) == 2 and sys.argv[1].strip() == "cmpt724" else "normal" 
+main(game_mode)
+
 # release resources
-# cap.release()
 pygame.quit()
 
