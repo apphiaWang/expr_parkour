@@ -259,6 +259,19 @@ class Obstacle:
 	def set_sound(self):
 		path = os.path.join('assets/sounds/crash.mp3')
 		self.crash_sound = pygame.mixer.Sound(path)
+	
+	def check_collision(self, character):
+		DELTA_H = -22
+		DELTA_V = -12
+		if self.x - character.x - character.width >= DELTA_H:
+			return False
+		if character.x - self.x - self.width >= DELTA_H:
+			return False
+		if self.y - character.y - character.height >= DELTA_V:
+			return False
+		if character.y - self.y - self.height >= DELTA_V:
+			return False
+		return True
 		
 class Bush(Obstacle):
 	def __init__(self, x):
@@ -322,20 +335,6 @@ class Fire(Obstacle):
 		path = os.path.join('assets/images/fire.png')
 		self.texture = pygame.image.load(path)
 		self.texture = pygame.transform.scale(self.texture, (self.width, self.height))
-
-class Collision:
-	def between(self, obj1, obj2):
-		DELTA_H = -22
-		DELTA_V = -12
-		if obj2.x - obj1.x - obj1.width >= DELTA_H:
-			return False
-		if obj1.x - obj2.x - obj2.width >= DELTA_H:
-			return False
-		if obj2.y - obj1.y - obj1.height >= DELTA_V:
-			return False
-		if obj1.y - obj2.y - obj2.height >= DELTA_V:
-			return False
-		return True
 
 class EnergyBar:
 	def __init__(self):
@@ -406,7 +405,6 @@ class Game:
 		self.enemy = Enemy()
 		self.energy_bar = EnergyBar()
 		self.obstacles = []
-		self.collision = Collision()
 		self.speed = GAME_SPEED
 		self.playing = False
 		self.set_sound()
@@ -505,7 +503,7 @@ def main(game_mode="normal"):
 					and not obstacle.crash
 					and loops % 5 == 1 
 					and not over
-					and game.collision.between(game.mc, obstacle)):
+					and obstacle.check_collision(game.mc)):
 					if game.mc.dashing:
 						obstacle.get_crash()
 					else:
