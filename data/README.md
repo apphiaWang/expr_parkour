@@ -4,13 +4,13 @@
 
 DISFA database is a non-posed facial expression database, which contains the collection spontaneous facial actions of 27 adult subjects, and each subject has been video recorded for 4 minutes to provide 130,788 images in total. 
 
-We used DISFA to train our “transformer based AU model”. We did not post this database, since it is only available for research purpose. If you want to use it to run our code, you need to complete the DISFA agreement form (http://mohammadmahoor.com/disfa-contact-form/) to request DISFA data.
+We used DISFA to train our "transformer-based AU model". We did not post this database, since it is only available for research purposes. If you want to use it to run our code, you need to complete the DISFA agreement form (http://mohammadmahoor.com/disfa-contact-form/) to request DISFA data.
 
 
 ## <ins>Self Created Evaluation Dataset</ins>
 
 ### Expression Video
-This is a dataset containing video of three Eastern-Asian female authors' facial expression while playing the project game. There are 23 videos ranging from 40 to 60 seconds long, with a total of 303 facial expressions. This dataset was captured by a BISON CAM, NB Pro webcam. The video is named as form "A_B", where A is the experimenter's number and B is the video's number. The naming matches the information in the Annotation.csv file.
+This is a dataset containing videos of the three Eastern-Asian female authors' facial expressions while playing the project game. There are 23 videos ranging from 40 to 60 seconds long, with a total of 303 facial expressions. This dataset was captured by a BISON CAM, NB Pro webcam. The video is named in the form "A_B", where A is the experimenter's number and B is the video's number. The naming matches the information in the Annotation.csv file.
 
 
 ### Annotation.csv
