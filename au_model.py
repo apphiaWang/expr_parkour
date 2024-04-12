@@ -8,7 +8,6 @@ from tensorflow.keras.layers import Lambda
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.applications import InceptionV3
 from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
-import numpy as np
 
 # other keras related library
 from keras_pos_embd import PositionEmbedding, TrigPosEmbedding
@@ -18,9 +17,10 @@ from keras_position_wise_feed_forward import FeedForward
 from keras_embed_sim import EmbeddingRet, EmbeddingSim
 
 import math
-
-import math
 import numpy as np
+
+import os.path
+import sys
 
 AU_count =12
 
@@ -523,7 +523,11 @@ def baseline_model(AU_count):
 
 def create_model():
     model=baseline_model(AU_count)
-    model.load_weights('./model/fau.h5')
+    weight_path = './transformer_based_AU_model/models/Transformer_FAU_fold0_newversion.h5'
+    if not os.path.isfile(weight_path):
+        print(f'Error: AU model weights unfound at {weight_path}, please check README.md to download the weights')
+        sys.exit(1)
+    model.load_weights(weight_path)
     return model
 
 if __name__ == '__main__':
