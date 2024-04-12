@@ -11,7 +11,7 @@ Control parkour action with the user's facial expression.
 - **assets**: the directory storing game assets such as background image and sound
 - **data**: the directory storing our collected data for self-evaluation, video data are not uploaded to github due to size limit
     - **annotation**: a csv file annotating the expression made at the corresponding time in the video
-- **transformer_based_AU_model**: the diectory storing code of training data processing and fine-tuning transformer-based AU detection model, details are explained in **transformer_based_AU_model/README.md**
+- **transformer_based_AU_model**: the diectory storing code of training data processing and fine-tuning transformer-based AU detection model, details are explained in [transformer_based_AU_model/README.md](./transformer_based_AU_model/README.md)
 
 
 ### Required Dependencies
