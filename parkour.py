@@ -514,14 +514,11 @@ def main(game_mode="normal"):
 		if loops % 20 == 1 and game.playing and not game.mc.in_action():
 			# predict emotion with deepface
 			deepface_result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
-			# print(len(deepface_result))
-			# for result in deepface_result:
-			# 	print(result['region'])
 			if len(deepface_result) == 0:
 				continue
 			deepface_result = deepface_result[0]['emotion']
 			
-			# face detection using OpenCV
+			# face detection using OpenCV for au detection
 			faces = face_cascade.detectMultiScale(frame, 1.1, 4)
 			if len(faces) == 0:
 				continue

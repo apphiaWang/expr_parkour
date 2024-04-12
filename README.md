@@ -38,11 +38,11 @@ You can run `pip install requirements.txt` to install the dependencies.
 ## How to play
 ### Start Game
 
-The game has two mode _NORMAL_ and _CHEAT_. In _CHEAT_ mode, you will not die if hitting an lethal obstacle like Rock and Ghost fire. This is useful to observe the real-time expression detection performance.
+The game has two mode _NORMAL_ and _CHEAT_. In _CHEAT_ mode, you will not die if hitting an lethal obstacle like Rock and Ghost fire. This is useful to observe the real-time expression detection performance. You can press ⬇️ down key to force game over.
 
 Start game in _NORMAL_ mode with command `python parkour.py`.
 
-Start game in _CHEAT_ mode with command `python parkour.py cmpt724`.
+Start game in _CHEAT_ mode with command `python parkour.py cmpt724`. 
 
 ### Game Control
 
@@ -51,8 +51,8 @@ The game can be controlled either by player's expression or keystroke input.
 | Expression | Action Unit | Keystroke | Parkour Action |
 |-|-|-|-|
 | 😁 Happy (smile) | AU6 Cheek Raiser, AU12 Lip Corner Puller | SPACE | Jump |
-| 😲 Surprise (o-mouth) | AU2 Outer Brow Raiser, AU 27 Mouth Stretch | LEFT SHIFT | Slide shovel |
-| 😠 *Angry (work hard) | AU4 Brow Lowerer, AU5 Upper Lid Raiser, AU7 Lid Tightener, AU23 Lip Tightener <br> AU9 Nose Wrinkler, AU 15 Lip Corner Depressor, AU 17 Chin Raiser | LEFT CTRL  | Dash |
+| 😲 Surprise (o-mouth) | AU2 Outer Brow Raiser, AU 27 Mouth Stretch | LEFT_SHIFT | Slide shovel |
+| 😠 *Angry (work hard) | AU4 Brow Lowerer, AU5 Upper Lid Raiser, AU7 Lid Tightener, AU23 Lip Tightener <br> AU9 Nose Wrinkler, AU 15 Lip Corner Depressor, AU 17 Chin Raiser | LEFT_CTRL  | Dash |
 
 > The angry face is actually a work-hard face which can have action units of angry (e.g. Brow Lowerer) and also of "disgust" (e.g. Nose Wrinkler). Here we named it as "angry" to make it easier for the player to understand the instructions.
 
