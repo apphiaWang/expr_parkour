@@ -5,8 +5,6 @@ import random
 import pygame
 import pygame.camera
 from deepface import DeepFace
-from au_model import create_model, get_expression_confidence_scores
-import numpy as np
 
 # init game setting
 SCREEN_WIDTH = 800
@@ -29,11 +27,8 @@ ENERGY_DASH_DURATION = 120
 ENERGY_GROWTH_DELTA = 100
 
 # init camera through opencv
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(0)
-
-# initialize au detector
-au_detector = create_model()
 
 # init pygame
 pygame.init()
@@ -480,14 +475,6 @@ class Game:
 	def reset(self):
 		self.__init__()
 
-def get_dominant_expression(deepface_result, au_result):
-	DEEPFACE_W = 0.95
-	AU_W = 0.05
-	target_exprs = ['happy', 'surprise', 'angry', 'neutral']
-	final_scores = [] 
-	for expr in target_exprs:
-		final_scores.append(deepface_result[expr] * DEEPFACE_W + au_result[expr] * AU_W)
-	return target_exprs[np.argmax(final_scores)]
 
 def main(game_mode="normal"):
 	
@@ -510,30 +497,10 @@ def main(game_mode="normal"):
 			break
 		frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 		
-		# predict expression
+		# predict expression for action
 		if loops % 20 == 1 and game.playing and not game.mc.in_action():
-			# predict emotion with deepface
-			deepface_result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
-			deepface_result = deepface_result[0]['emotion']
-			
-			# face detection using OpenCV
-			faces = face_cascade.detectMultiScale(frame, 1.1, 4)
-			if len(faces) == 0:
-				continue
-			x, y, w, h = faces[0]
-			face_img = frame[y:y+h, x:x+w]
-			face_img = cv2.resize(face_img, (224, 224))
-			face_img = np.expand_dims(face_img, axis=0)
-			
-			# detect au in face and map to expression
-			y_predict = au_detector.predict(face_img, verbose=0)
-			ind = np.where(y_predict[1] > 0.8)[1]
-			au_result = get_expression_confidence_scores(ind)
-
-			# combine deepface result and au result
-			expr = get_dominant_expression(deepface_result, au_result)
-
-			# perform action
+			result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
+			expr = result[0]['dominant_emotion']
 			if expr == "happy":
 				if game.mc.onground:
 					game.mc.jump()

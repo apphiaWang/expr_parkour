@@ -18,7 +18,6 @@ from keras_position_wise_feed_forward import FeedForward
 from keras_embed_sim import EmbeddingRet, EmbeddingSim
 
 import math
-from tqdm import tqdm
 
 import math
 import numpy as np
@@ -62,16 +61,18 @@ def get_expression_confidence_scores(au_indexes, threshold = 0.3):
 
     # "angry" AU
     if ('Nose Wrinkler' in au_set):
-        scores['angry'] += 0.4
+        scores['angry'] += 0.25
     if ('Lip Corner Depressor' in au_set):
-        scores['angry'] += 0.2
-    if ('Brow Lowerer' in au_set):
         scores['angry'] += 0.1
+    if ('Brow Lowerer' in au_set):
+        scores['angry'] += 0.25
     if ('Lip Tightener' in au_set):
         scores['angry'] += 0.1
     if ('Upper Lid Raiser' in au_set):
         scores['angry'] += 0.1
     if ('Lip Tightener' in au_set):
+        scores['angry'] += 0.1
+    if ('Chin Raiser' in au_set):
         scores['angry'] += 0.1
 
     return scores
