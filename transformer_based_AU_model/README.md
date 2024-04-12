@@ -4,8 +4,8 @@
 + Certain self-defined loss function from the original paper is deprecated(we tried to contact the author but we are still waiting for the reply), so we use substitution loss functions.
 
 # Dataset
-+ The model is pre-trained on [BP4D dataset] (https://www.cs.binghamton.edu/~lijun/Research/3DFE/3DFE_Analysis.html), which is a 3D video database of spontaneous facial expressions in a diverse group of young adults.
-+ We finetuned the pre-trained model on [The Denver Intensity of Spontaneous Facial Action (DISFA)] (http://mohammadmahoor.com/disfa/), which consists of 27 videos with real human faces in it.
++ The model is pre-trained on [BP4D dataset](https://www.cs.binghamton.edu/~lijun/Research/3DFE/3DFE_Analysis.html), which is a 3D video database of spontaneous facial expressions in a diverse group of young adults.
++ We finetuned the pre-trained model on [The Denver Intensity of Spontaneous Facial Action (DISFA)](http://mohammadmahoor.com/disfa/), which consists of 27 videos with real human faces in it.
 
 # Experiment Platform
 + All experiments are done on Google Colab using both CPU and T4 GPU.
@@ -19,7 +19,7 @@
 ## Pretrained Model Inference
 + pretrained_inference.ipynb: Used the pre-trained model to do inference and evaluation on the DISFA test set. 
 ## Finetune and Inference
-finetune_inference.ipynb: Used the pre-trained model and finetune it on the DISFA training data. We change part of the loss functions for experiments. Then the finetuned model was used to do inference and evaluation on the DISFA test set.
+finetune_inference.ipynb: Used the pre-trained model and finetuned it on the DISFA training data. We change part of the loss functions for experiments. Then the finetuned model was used to do inference and evaluation on the DISFA test set.
 ## Model files
 + face detection/shape_predictor_68_face_landmarks.dat: The model file used for identifying the 68 landmarks of faces in an image.
 + models: store the finetuned model weights
