@@ -50,11 +50,12 @@ The game can be controlled either by player's expression or keystroke input.
 
 | Expression | Action Unit | Keystroke | Parkour Action |
 |-|-|-|-|
-| 😁 Happy (smile) | AU6 Cheek Raiser, AU12 Lip Corner Puller | SPACE | Jump |
-| 😲 Surprise (o-mouth) | AU2 Outer Brow Raiser, AU 27 Mouth Stretch | LEFT_SHIFT | Slide shovel |
-| 😠 *Angry (work hard) | AU4 Brow Lowerer, AU5 Upper Lid Raiser, AU7 Lid Tightener, AU23 Lip Tightener <br> AU9 Nose Wrinkler, AU 15 Lip Corner Depressor, AU 17 Chin Raiser | LEFT_CTRL  | Dash |
+| 😁 Smiley | AU6 Cheek Raiser, AU12 Lip Corner Puller | SPACE | Jump |
+| 😲 Surprised | AU2 Outer Brow Raiser, AU 27 Mouth Stretch | LEFT_SHIFT | Slide shovel |
+| 😠 Hardworking | AU4 Brow Lowerer, AU5 Upper Lid Raiser, AU7 Lid Tightener, AU23 Lip Tightener <br> AU9 Nose Wrinkler, AU 15 Lip Corner Depressor, AU 17 Chin Raiser | LEFT_CTRL  | Dash |
 
-> The angry face is actually a work-hard face which can have action units of angry (e.g. Brow Lowerer) and also of "disgust" (e.g. Nose Wrinkler). Here we named it as "angry" to make it easier for the player to understand the instructions.
+The following figure shows the control expressions, sample expressions actually detected by the game, and the controlled action. 
+<img src="./doc_assets/gameplay.png" width = 500px>
 
 ## Self-evaluation
 
