@@ -9,6 +9,7 @@ Control parkour action with the user's facial expression.
 - **parkour_deepface.py**: the game with DeepFace for expression detection
 - **au_model.py**: create our AU detector mode
 - **assets**: the directory storing game assets such as background image and sound
+- **doc_assets**: the directory storing assets used for documentation
 - **data**: the directory storing our collected data for self-evaluation, video data are not uploaded to github due to size limit
     - **annotation**: a csv file annotating the expression made at the corresponding time in the video
 - **transformer_based_AU_model**: the diectory storing code of training data processing and fine-tuning transformer-based AU detection model, details are explained in [transformer_based_AU_model/README.md](./transformer_based_AU_model/README.md)
@@ -52,7 +53,7 @@ The game can be controlled either by player's expression or keystroke input.
 |-|-|-|-|
 | 😁 Smiley | AU6 Cheek Raiser, AU12 Lip Corner Puller | SPACE | Jump |
 | 😲 Surprised | AU2 Outer Brow Raiser, AU 27 Mouth Stretch | LEFT_SHIFT | Slide shovel |
-| 😠 Hardworking | AU4 Brow Lowerer, AU5 Upper Lid Raiser, AU7 Lid Tightener, AU23 Lip Tightener <br> AU9 Nose Wrinkler, AU 15 Lip Corner Depressor, AU 17 Chin Raiser | LEFT_CTRL  | Dash |
+| 😠 Hardworking | AU4 Brow Lowerer, U7 Lid Tightener, AU9 Nose Wrinkler, AU 17 Chin Raiser | LEFT_CTRL  | Dash |
 
 The following figure shows the control expressions, sample expressions actually detected by the game, and the controlled action. 
 <img src="./doc_assets/gameplay.png" width = 500px>

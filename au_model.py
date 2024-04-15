@@ -32,57 +32,45 @@ AU_Mapping = {0:'Inner Brow Raiser',1:'Outer Brow Raiser',
         11:'Chin Raiser', 12: 'Lip Stretcher',13:'Lip Tightener',
         14:'Lip pressor',15:'Lips Part',16:'Jaw Drop',17:'Eyes Closed'}
 
-def get_expression_confidence_scores(au_indexes, threshold = 0.3):
-    # reference https://link.springer.com/article/10.1007/s12652-019-01278-2
+def get_expression_confidence_scores(au_indexes, threshold = 0.4):
+    # reference https://imotions.com/blog/learning/research-fundamentals/facial-action-coding-system/
     au_set = set([AU_Mapping[index] for index in au_indexes])
     
     scores = {
-        'happy': 0,
-        'surprise': 0,
-        'angry': 0,
+        'smiley': 0,
+        'surprised': 0,
+        'hardworking': 0,
         'neutral': 0
     }
     
-    # happy AU
+    # smiley AU
     if ('Cheek Raiser' in au_set):
-        scores['happy'] += 0.4
+        scores['smiley'] += 0.4
     if ('Lip Corner Puller' in au_set):
-        scores['happy'] += 0.6
+        scores['smiley'] += 0.6
     
     # surprised AU
     if ('Jaw Drop' in au_set):
-        scores['surprise'] += 0.4
-    if ('Inner Brow Raiser' in au_set):
-        scores['surprise'] += 0.2
+        scores['surprised'] += 0.4
     if ('Outer Brow Raiser' in au_set):
-        scores['surprise'] += 0.2
-    if ('Upper Lid Raiser' in au_set):
-        scores['surprise'] += 0.2
+        scores['surprised'] += 0.6
 
-    # "angry" AU
+    # hardworking AU
     if ('Nose Wrinkler' in au_set):
-        scores['angry'] += 0.25
-    if ('Lip Corner Depressor' in au_set):
-        scores['angry'] += 0.1
+        scores['hardworking'] += 0.4
     if ('Brow Lowerer' in au_set):
-        scores['angry'] += 0.25
-    if ('Lip Tightener' in au_set):
-        scores['angry'] += 0.1
-    if ('Upper Lid Raiser' in au_set):
-        scores['angry'] += 0.1
-    if ('Lip Tightener' in au_set):
-        scores['angry'] += 0.1
+        scores['hardworking'] += 0.4
+    if ('Lid Tightener' in au_set):
+        scores['hardworking'] += 0.1
     if ('Chin Raiser' in au_set):
-        scores['angry'] += 0.1
+        scores['hardworking'] += 0.1
 
+    if (scores['smiley'] < threshold 
+        and scores['surprised'] < threshold
+        and scores['hardworking'] < threshold):
+        scores['neutral'] = 0.9
     return scores
-    # # find max score
-    # scores = [happy_score, surprised_score, angry_score]
-    # labels = ('happy', 'surprise', 'angry')
-    # max_score = scores[np.argmax(scores)]
-    # if max_score >= threshold:
-    #     return labels[np.argmax(scores)]
-    # return 'neutral'
+
 
 def gelu(x):
     """An approximation of gelu.
@@ -525,6 +513,7 @@ def create_model():
     model=baseline_model(AU_count)
     weight_path = './transformer_based_AU_model/models/Transformer_FAU_fold0_newversion.h5'
     if not os.path.isfile(weight_path):
+        print('Error loading fine-tuned weights!!!')
         print(f'Error: AU model weights unfound at {weight_path}, please check README.md to download the weights')
         sys.exit(1)
     model.load_weights(weight_path)

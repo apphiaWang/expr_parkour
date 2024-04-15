@@ -28,6 +28,8 @@ ENERGY_DASH_DURATION = 120
 
 ENERGY_GROWTH_DELTA = 100
 
+DETECT_FREQUENCY = 20 # detect expression every N frames
+
 # init camera through opencv
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(0)
@@ -481,13 +483,31 @@ class Game:
 		self.__init__()
 
 def get_dominant_expression(deepface_result, au_result):
-	DEEPFACE_W = 0.98
-	AU_W = 0.02
-	target_exprs = ['happy', 'surprise', 'angry', 'neutral']
+	DEEPFACE_W = 0.99
+	AU_W = 0.01
+	target_exprs = ['smiley', 'surprised', 'hardworking', 'neutral']
 	final_scores = [] 
 	for expr in target_exprs:
 		final_scores.append(deepface_result[expr] * DEEPFACE_W + au_result[expr] * AU_W)
 	return target_exprs[np.argmax(final_scores)]
+
+
+def map_deepface_to_target_expr(deepface_result):
+	mapped_scores  = {
+        'smiley': 0,
+        'surprised': 0,
+        'hardworking': 0,
+        'neutral': 0
+    }
+	mapped_scores['smiley'] = deepface_result['happy']
+	mapped_scores['surprised'] = deepface_result['surprise']
+	mapped_scores['neutral'] = deepface_result['neutral']
+	mapped_scores['hardworking'] = deepface_result['angry']
+	if deepface_result['disgust'] > mapped_scores['hardworking']:
+		mapped_scores['hardworking'] = deepface_result['disgust']
+	return mapped_scores
+	
+
 
 def main(game_mode="normal"):
 	
@@ -501,6 +521,7 @@ def main(game_mode="normal"):
 
 	game.show_start_msg()
 
+	pred_times = []
 	# pygame loop
 	while True:
 		# read webcam images		
@@ -511,12 +532,13 @@ def main(game_mode="normal"):
 		frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 		
 		# predict expression
-		if loops % 20 == 1 and game.playing and not game.mc.in_action():
+  
+		if loops % DETECT_FREQUENCY == 1 and game.playing and not game.mc.in_action():
 			# predict emotion with deepface
 			deepface_result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
 			if len(deepface_result) == 0:
 				continue
-			deepface_result = deepface_result[0]['emotion']
+			deepface_result = map_deepface_to_target_expr(deepface_result[0]['emotion'])
 			
 			# face detection using OpenCV for au detection
 			faces = face_cascade.detectMultiScale(frame, 1.1, 4)
@@ -536,12 +558,12 @@ def main(game_mode="normal"):
 			expr = get_dominant_expression(deepface_result, au_result)
 
 			# perform action
-			if expr == "happy":
+			if expr == "smiley":
 				if game.mc.onground:
 					game.mc.jump()
-			elif expr == "surprise":
+			elif expr == "surprised":
 				game.mc.shovel(loops)
-			elif expr == "angry" or expr == "disgust":
+			elif expr == "hardworking":
 				if game.energy_bar.value == 5:
 					game.mc.dash(loops)
 					game.energy_bar.use_energy(loops)
@@ -623,12 +645,11 @@ def main(game_mode="normal"):
 				if event.key == pygame.K_DOWN: # force game over
 					over = True
 					force_over = True
-		
+
 		# game over if not cheating
 		if force_over or (game_mode!= "cheat" and over and game.playing):
 			game.over()
 			force_over = False
-
 
 		pygame.display.update()
 		

@@ -27,7 +27,6 @@ ENERGY_DASH_DURATION = 120
 ENERGY_GROWTH_DELTA = 100
 
 # init camera through opencv
-faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 cap = cv2.VideoCapture(0)
 
 # init pygame
@@ -487,7 +486,6 @@ def main(game_mode="normal"):
 	force_over = False
 
 	game.show_start_msg()
-
 	# pygame loop
 	while True:
 		# read webcam images		
@@ -500,13 +498,15 @@ def main(game_mode="normal"):
 		# predict expression for action
 		if loops % 20 == 1 and game.playing and not game.mc.in_action():
 			result = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
-			expr = result[0]['dominant_emotion']
-			if expr == "happy":
+			deepface_label = result[0]['dominant_emotion']
+			
+			# perform action
+			if deepface_label == "happy": # smiley face
 				if game.mc.onground:
 					game.mc.jump()
-			elif expr == "surprise":
+			elif deepface_label == "surprise": # surprised face
 				game.mc.shovel(loops)
-			elif expr == "angry" or expr == "disgust":
+			elif deepface_label == "angry" or deepface_label == "disgust": # hardworking
 				if game.energy_bar.value == 5:
 					game.mc.dash(loops)
 					game.energy_bar.use_energy(loops)
